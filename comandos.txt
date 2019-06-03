@@ -1,0 +1,524 @@
+### CRIAR BANCO DE DADOS NO SQL
+
+CREATE DATABASE db_Biblioteca -- Nome do banco de Dados
+ON PRIMARY ( -- ON PRIMERY GRUPO DE ARQUIVOS PRIMARIOS
+NAME = db_Biblioteca,
+FILENAME='C:\SQL\db_Biblioteca.MDF', -- NOME DO ARQUIVO E LOCALIZAÇÃO NO DISCO
+SIZE=6BM, -- TAMANHO DO BANCO DE DADOS
+MAXSIZE=15MB, -- TAMANHO MAXIMO DO BANCO DE DADOS "NAO É OBRIGATORIO"
+FILEGROWTH=10% -- COMO O ARQUIVO VAI CRESCER NESSE CASO DE 10 EM 10 POR CENTO
+
+## USE
+USE db_Biblioteca -- intrui que tudo quer for digita abaixo sera aplicado nesse banco dados"db_Biblioteca"
+
+## sp_helpdb
+sp_helpdb db_Biblioteca -- INFORMA TAMANHO,TAXA DE CRESCIMENTO, LOCAL DO BANCO DE DADOS etc..
+
+## constraints (restrições)
+
+NOT NULL - CAMPO NÃO ACEITA VALOR NULO
+UNIQUE - IDENTIFICA DE FORMA UNICA ESSE DADO NO CAMPO EXEMPLO CPF 
+PRIMARY KEY - CHAVE PREIMARIA AUTOMATICAMENTE ELA JA INSERE A UNIQUE
+FOREIGN KEY - CHAVE ESTRANGEIRA É UM CAMPO QUE APONTA PARA UMA CHAVE PRIMARIA EM OUTRA TABELA
+CHECK - LIMITAR UMA FAIXA DE VALORES QUE PODEM SER COLOCADAS EM UMA COLUNA
+DEFAULT - É USADA PARA INSERIR UM VALOR PADRAO EM UMA COLUNA
+
+#### EXEMPLO DE CRIAÇÃO DE TABELA ###
+
+tbl_Livro (    -- NOME DA TABELA
+ ID_Livro SMALLINT PRIMARY KEY IDENTITY(100,1), -- NOME DO CAMPO (SMALLINT INTEIRO) IDENTITY AUTO INCREMENTO INICIA EM 100 E VAI SUBINDO DE 1 EM 1
+ Nome_Livro VARCHAR(30) NOT NULL,
+ ISBN VARCHAR(30) NOT NULL UNIQUE,
+ ID_AUTOR SMALLINT NOT NULL,
+ Data_Pub DATETIME NOT NULL,
+ Preco_Livro MONEY NOT NULL
+ )
+##### INSERINDO DADOS NAS TABELAS 
+
+INSERT INTO tbl_teste_identidade(valor) VALUES (XX)
+INSERT INTO tbl_teste_identidade (valor) VALUES (XX)
+INSERT INTO tbl_teste_identidade (valor) VALUES (XX)
+
+##### ALTERANDO ATRIBUTOS NA TABELA
+
+ALTER TABLE -DROP -> ALTERAR COLUNA
+EXEMPLO: ALTER TABLE nome_da_tabela
+	DROP COLUMN nome_coluna
+
+excluir uma constraint (restrição) 
+DROP CONSTRAINT nome_constraint
+
+### ADICIONAR CAMPO 
+ADD ID_Autor SMALLINT NOTNULL
+CONSTRAINT id_editora FOREIGN KEY (ID_Editora)
+REFERENCES tbl_editoras
+
+### Alterar tipagem da coluna 
+
+ALTER TABLE nomedatabela
+ALTER COLUMN nomedacoluna SMALLINT,VARCHAR ETC....
+
+### ADD CHAVE PRIMARIA
+
+ALTER TABLE nomedatabela
+ADD PRIMARY KEY (ID_Cliente)
+
+######### EXCLUIR TABELA
+
+DROP TABLE nomedatabela
+DROP TABLE Clientes
+
+#### tabela Autores exemplo
+
+INSERT INTO tbl_Autor (ID_Autor,Nome_Autor,Sobre_NomeAutor) VALUES ('1','Daniel','Barret')
+INSERT INTO tbl_Autor (ID_Autor,Nome_Autor,Sobre_NomeAutor) VALUES ('2','Gerald','Carter')
+INSERT INTO tbl_Autor (ID_Autor,Nome_Autor,Sobre_NomeAutor) VALUES ('3','Mark','Sobel')
+INSERT INTO tbl_Autor (ID_Autor,Nome_Autor,Sobre_NomeAutor) VALUES ('4','Willian','Stanek')
+INSERT INTO tbl_Autor (ID_Autor,Nome_Autor,Sobre_NomeAutor) VALUES ('5','Richard','Blum')
+## tabela editoras
+INSERT INTO tbl_Editoras (Nome_Editora) VALUES ('Prentice Hall')
+INSERT INTO tbl_Editoras (Nome_Editora) VALUES ('Ó Reilly')
+INSERT INTO tbl_Editoras (Nome_Editora) VALUES ('Microsoft Press')
+INSERT INTO tbl_Editoras (Nome_Editora) VALUES ('Wiley')
+
+ *****   SELECT * FROM tbl_Livro -- ( * quer dizer tudo e from quer dizer origem)
+
+######  REMOVER TODAS LINHAS DE UMA TABELA (REGISTROS)
+
+TRUNCATE TABLE nomedatabela
+DELETE FROM TB_Produto
+SELECT COUNT (*) FROM nomedatabela
+
+### CONSULTA SIMPLES 
+
+SELECT Nome_Autor FROM tbl_Autor
+
+SELECT Nome_Autor FROM tbl_Autor ( Mostrar o campo Nome_Autor DA tbl_Autor ) 
+SELECT * FROM tbl_Autor ( Mostrar todos os campos DA tbl_Autor )
+SELECT Nome_Livro FROM tbl_Livro ( Mostrar o campo Nome_Livro DA tbl_Livro )
+SELECT ID_Livro, Nome_Livro FROM tbl_Livro ( MAIS DE UM CAMPO )
+
+## ORDER BY APRESENTAR RESULTADO ORDENADO
+ESC - ORDEM ASCENDENTE
+DESC - OREDEM DESCENDENTE
+
+SELECT * FROM tbl_Autor ORDER BY Nome_Autor 
+
+## DISTINCT 
+NÃO APRESENTAR VALORES REPETIDOS NOS CAMPOS
+
+SELECT DISTINCT ID_Autor FROM tbl_Livro
+
+## CLAUSULA WHERE FILTRA REGISTROS EM UMA CONSULTA
+
+SELECT colunas FROM tabela WHERE coluna= valor
+
+## OPERADORES AND E OR 
+
+SELECT * FROM tbl_livro 
+WHERE ID_Livro > 101 AND ID_Autor <3  -- DUAS CONDIÇÕES SÃO ATENDIDAS 
+
+SELECT * FROM tbl_livro 
+WHERE ID_Livro > 101 OR ID_Autor <3 -- UM MAIOR CONJUNTO ATNDINDO POIS UMA OU OUTRA ATENDIDA 
+
+## SELECT TOP 
+usado para especificar o numero de registros a retornar , util para tabelas co muito registros
+
+SELECT TOP numero|percentual colunas FROM tabela
+
+## SQL ALIAS 
+pode se dar um nome diferente a uma coluna ou tabela em uma consulta 
+
+SELECT colunas AS nome_alias FROM tabela 
+
+SELECT Nome_Livro
+AS LiVrOs, ID_Autor AS Autor 
+FROM tbl_Livro
+
+### OPERADOR UNION
+permite combinar duas ou mais declarações SELECT
+cada declaração SELECT deve ter o mesmo numero de colunas, tipos de dados e ordem daa colunas 
+
+SELECT colunas FROM tabela1
+UNION
+SELECT colunas FROM tabela2
+
+### SELECT INTO CRIAÇÃO DE UMA TABELA APARTIR DE UMA JA EXISTENTE
+seleciona dados de uma ou mais tabelas e os insere em uma tabela diferente.
+pode ser usada par criar copias de backups de tabelas
+
+SELECT novatabela FROM tabela_atual
+
+### FUNÇÕES AGREGADAS
+
+MIN = Valor Minimo
+MAX = Valor Maximo
+AVG = Media Aritmetica
+SUM = Total (SOMA)
+COUNT = Contar quantidade de itens
+
+pode haver difrenças caso nos registros algum campo for null então ela não aparece
+
+### BETWEEN ( ENTRE ) SELEÇÃO DE INTERVALOS EM CONSULTAS
+
+SELECT colunas FROM tabela 
+WHERE coluna BETWEEN valor1 AND valor2 
+
+### LIKE E NOT LIKE Filtragem por padroes especificos
+determina se uma cadeia de caracteres especifica correspsonde a um padrao especificado
+Um padrao pode incluir caracteres normais e curingas 
+NOT LIKE inverte a comparação, verificando se a cadeia de caracteres NÃO corresponde
+ao padrao especificado
+usado junto com WHERE
+
+WHERE coluna LIKE padrao
+
+'%' -- Qualquer cadeia de 0 ou mais caracteres 
+'_' -- Sublinhado : qualquer caracter unico
+'[]'--Qulaquer caracter unico que nao esteja no intervalo ou conjunto especificado([a-h];[aeiou])
+'^'-- Qualquer caracter unico que nao esteja no intervalo ou conjunto especificado([a-h];[aeiou])
+
+### JOINS OBTER DADOS DE DUAS TABELAS DIFERENTES, 
+ELAS DEVEM POSSUIR UM RELACIONAMENTO PRIAMRY KEY OU FOREGIN KEY (ESTRANGEIRA)
+
+INNER JOINS - Retorna linhas quando houver pelo menos uma corresponencia em ambas as tabelas.
+OUTERS JOINS - Retorna linhas mesmo quando não houver pelo menos uma correspondecia em uma 
+das tabelas (ou ambas) O OUTERS JOINS DIVIDE-SE EM : LEFT JOIN, RIGHT JOIN E FULL JOIN.
+
+INNER JOINS SINTAXE :
+
+SELECT colunas FROM tabela1 INNER JOIN tabela2 ON tabela1.coluna=tabela2.coluna
+(INNER JOIN) = JUNTO
+
+EX. SELECT * FROM tbl_Livro INNER JOIN tbl_autor ON tbl_Livro.ID_Autor=tbl_Autor.ID_Autor
+outro exemplo
+
+SELECT tbl_livro.Nome_Livro,tbl_Livro.ISBN, tbl_autor.Nome_Autor 
+FROM tbl_Livro
+INNER JOIN tbl_autor
+ON tbl_Livro.ID_Autor = tbl_Autor.ID_Autor
+
+Usando ALiases
+SELECT L.Nome_Livro,E.Nome_editora
+FROM tbl_Livro AS L
+INNER JOIN tbl_editoras AS E 
+ON L.ID_editora = E.ID_editora 
+
+### OUTER JOINS
+-LEFT JOIN Retorna todas as linhas da tabela à esquerda, mesmo se não houver nenhuma correspondencia
+na tabela direita
+-RIGHT JOIN Retorna todas as linhas da tabela a direita, mesmo se não houver nenhuma correspondencia
+na tabela esquerda
+-FULL JOIN Retorna Linhas quando houver uma correspondencia em qualquer uma das tabelas.
+é uma combinação de LEFT e RIGHT JOINS 
+
+LEFT JOIN coluna FROM tabela_esq
+LEFT(OUTER) JOIN tabela_dir
+ON tabela_esq.coluna = tabela_dir.coluna
+
+SELECT * FROM tbl_Autor
+LEFT JOIN tbl_Livro
+ON tbl_Livro.ID_Autor = tbl_autor.ID_Autor
+
+### RIGHT JOIN
+
+SELECT * FROM tbl_Autor AS Li
+RIGTH JOIN tbl_editoras AS Ed
+
+## FULL OUTER JOIN -  Dados de varias tabelas 
+combinação de RIGHT JOIN COM LEFT JOIN , retornando registros que não possuam correspondencias em
+ambas as tabelas .
+
+SELECT colunas FROM tabela1 
+FULL (OUTER) JOIN tabela2 
+ON tabela1.coluna  = tabela2.coluna
+
+##### IN : Filtro de Multiplas Condições
+
+Determina se um determinado valor corresponde a qualquer valor em uma sub consulta ou lista.
+retorna sempre TRUE OU FALSE.
+Pode substituir o OR em Queries com mais de uma condição
+sintaxe 
+Expressão_teste(NOT) IN (subconsulta | lista)
+SELECT * FROM tbl_Livro 
+WHERE ID_Autor IN (1,2)
+
+#### CAMPOS CALCULADOS
+
+### INDICES
+Permite que as apalicações de banco de dados encontrem os dados mais rapidamente, sem ter de ler 
+a tabela toda.
+os usuario não veem os indices
+
+CREATE INDEX
+
+Obs. Apenas crie indices em tabelas que recebam muitas consultas
+tabelas indexadas levam mais tempo para serem atualizadas.
+
+CREATE INDEX nome_indice
+ON nome_tabela (nome_coluna)
+
+#### REGRAS 
+As regras são configurações que permitem especificar como determinados parametros do banco de dados
+devem se comportar, como por exemplo, limitar faixas de valores em colunas, ou especificar valores
+ivalidos para registros.
+
+CREATE RULE nome_regra AS parametros
+
+STORE PROCEDURE = PROCEDIMENTO ARMAZENADO (CODIGO PRÉ-PROGRAMADO)
+
+### BACKUP DO BANCO DE DADOS
+BACKUP DATABASE nomedobancodedados
+TO DISK = 'C:\arquivos\nomebancodedados.bak';
+WITH FORMAT; = FORMATAR A UNIDADE DE DESTINO NO CASO DE MIDIAS REMOVIVEIS
+GO -> executar
+
+#### CONCATENAÇÃO DE STRINGS
+É POSSIVEL concatenar strings usando-se o operador de concatenação +
+Sintaxe: 
+string 1| coluna1 + string2 | coluna
+
+SELECT Nome_Autor +' '+Sobre_NomeAutor AS 'Nome Completo' FROM tbl_Autor 
+SELECT 'Eu gosto do Livro '+Nome_Livro AS 'Minha Preferencia' FROM tbl_Livro
+WHERE ID_Autor = 2 
+SE COLOCAR UM ID QUE NÃO EXISTE NÃO APARECERA A FRASE CONCATENADA
+POIS AS STRING NÃO CONCATENA COM VALORES NULL
+
+####  COLLATION AGRUPAMENTO DE CARACTERES OU COLAÇÃO 
+
+TRATA-SE da codificação dos caracteres em uma ordem padrão.
+Muitos sistemas de colação são baseados em ordem numerica ou alfabetica.
+A colação usada pelos bancos de dados é configurada durante a instalação do sistema.
+collation-charts.org -site com cartas de agrupamento em varios alfabetos e idiomas 
+
+-- para ver as opções de agrupamentos disponiveis
+--SELECT * FROM fn_helpcollations()
+
+-- para ver o esquema de colação usadado atualmente pelo servidor
+
+--SELECT SERVERPROPERTY('COLLATION') AS 'COLLATION USADA'
+
+SELECT * FROM tbl_Livro
+ORDER BY Nome_Livro
+COLLATE Icelandic_CI_AI
+
+### CLAUSULA WITH TIES 
+
+USE db_Brasileirao2015
+
+SELECT TOP(5) nome_time,jogo,pontos FROM tbl_times
+ORDER BY pontos DESC -- Quero que apresente a tabela por ordem de pontos 
+
+
+SELECT TOP(6) WITH TIES nome_time, pontos -- WHIT TIES verifica se ha algum item apos o ultimo com  mesma pontuação
+FROM tbl_times
+ORDER BY pontos desc -- Quero que apresente a tabela por ordem de pontos 
+
+### VIEWS (EXIBIÇÕES) - CRIAR,ALTERAR E EXCLUIR
+
+UMA Exibição (Visão) é uma tabela virtual baseada no conjunto de resultados de uma consulta SQL
+CONTEM LINHAS E COLUNAS como uma tabela real e pode receber comandos como declarações JOIN,
+WHERE e funções como uma tabela normal.
+Mostra sempre resultados de dados atualizados, pois o motor de banco de dados recria os dados 
+toda vez que um usuario consulta a visão
+
+CREATE VIEW [Nome_Exibição] AS 
+SELECT colunas FROM tabela
+WHERE condições  
+
+para excluir exibição 
+
+DROP VIEW nome_exibição
+
+### Subconsulta (subquery) é uma declaração SQL embutida em uma consulta externa.
+A subconsulta fornece uma resposta a consulta externa na forma de um valor escalar, lista de valores
+ou conjunto de dados equivalentes a uma expressão, lista ou tabela para consulta externa.
+Exemplo simples
+
+SELECT (SELECT 'fabio') AS SubConsulta; 
+
+### CTE - Common Table Expression (subConsulta) com tabelas derivadas
+
+EXPRESSAO de TABELA COMUN
+
+Variação sintatica de uma subconsulta, similar a uma exibição (view).
+Pode ser acessada múltiplas vezes dentro da consulta principal, como se fosse uma exibição
+ou tabela.
+
+WITH nome_Consulta (coluna1,coluna2) 
+AS (SELECT
+)
+
+### VARIAVEIS - Declaração e atribuição de valores
+
+AS Variaveis podem ser declaradas no corpo de um batch ou procedimento.
+Pode-se atribui-lhes valores usabdo-se declarações SET OU SELECT.
+As variaveis são inicializadas por padrão com NULL
+
+DECLARE @nome_var tipo
+
+exemplo DECLARE  @valor INT,
+		@texto VARCHAR(40),
+		@data_nasc DATE,
+		@nada MONEY
+
+Usando-se a palavra DECLARE apenas uma vez para todas as variaveis.
+
+USANDO O SET 
+SET @valor = 50
+SET @texto = 'Bóson'
+SET @data_nasc = GETDATE()
+
+SELECT @valor AS VALOR, @texto AS NOME, @data_nasc AS 'Data de Nasciemnto',@nada AS SALARIO
+
+USANDO O SELECT
+
+SELECT nome_var = coluna FROM tabela 
+WHERE condição
+SELECT nome_var AS alias
+
+### CONVERSAO DE TIPOS de Dados no SQL com Cast e Convert
+
+CAST(expressão AS novo_tipo_dados)
+
+CONVERT (novo_tipo_dados,expressão,estilo) 
+estilo normalmente é usado para converter datas ou trabalhar com float/real
+
+http://msdn.microsoft.com/pt-br/library/ms187928.aspx
+
+#### CONDICIONAL IF / ELSE
+IF condicao 
+Declaração
+
+IF Condição 
+   Declaração
+ELSE
+   Declaração
+
+#### STORE PROCEDURE criação e execução 
+
+São Lote(batches) de declarações SQL que podem ser executada como subrotinas.
+Permitem centralizar a logica de acesso aoa dados em um unico local, facilitando a manutenção
+e otimização de código.
+Tambem é possivel ajustar permissões de acesso aos ususarios, definindo 
+quem pode ou não executa-las.
+
+CREATE PROCEDURE  nome_procedimento (@parametro tipo_dados) AS
+
+Bloco de codigos
+EXEMPLO
+	CREATE PROCEDURE teste AS 
+	SELECT 'Bóson Treinamentos' AS Nome
+para executar 
+
+	EXEC(UTE) teste
+obs. Se o procediemnto armazenado for o primeiro comando de um batch, não é necessario usar a 
+palavra  EXEC.
+
+# Visualizar o conteudo de um procedure
+Use o procediemnto armazenado sp_helptext para extrair o conteudo de um texto de uma STORED PROCEDURE
+EXEC sp_helptext nome_procedimento
+
+exe.:
+EXEC sp_helptext p_LivroValor
+
+# criptografar procedimento
+
+WITH ENCRYPTION
+
+## MODIFICAR STORE PROCEDURE
+
+ALTER PROCEDURE nome_procedimento 
+bloco de codigo da sp (store procedure)
+
+### Parametros de Saida
+
+ Os parametros de saida habilita um procediemnto chamador.
+Usamos a palavra cahve OUTPUT quando o procediemnto é chamado.
+No procediemnto armazenado,  o parametro de saida aparece como uma variavel local;
+No procediemnto chamador, uma variavel deve ser criada para receber o parametro de saida
+
+#### FUNÇÕES Definidas pelo Usuario
+
+Podemos criar funções (UDFs) para realizar diversas tarefas nos bancos de dados, tais como
+- inserir logica complexa em uma consulta
+- Criar novas Funções para expressões complexas 
+-Substituir exibições com a vantagem de aceitar paramentros 
+
+Ha vario tipos de de UDFs:
+Funções Escalares, Valor de Tabela Embutida, Valor de Tabela Multi-insgtruções
+
+## FUNÇÕES ESCALARES
+Retorna apenas um unico valor especifico.
+sintaxe
+
+CREATE FUNCTION nome_funcao (parametro)
+RETURNS tipo_dados_retorno
+AS
+BEGIN
+	Bloco de codigos
+	RETURN expressão_retorno
+END 
+
+## FUNÇÕES com valor de tabelas embutidas (inline) 
+
+São similares a uma exibição, porem permitem utilizar parâmetros. Retornam um conjunto completo
+de dados.
+
+Sintaxe.
+
+CREATE FUNCTION nome_funcao (parâmetros)
+RETURN Table 
+AS 
+RETURN (Declaração_Select )
+
+### FUNÇÕES com valor de Tabela com varias instruções 
+
+Combina a habilidade da função escalar de conter codigos complexos com a habilidade da função
+com valor de tabela de retornar um resultset.
+Esse tipo de função cria uma variavel do tipo table e a popula a partir do codigo. Essa tabela
+é então passada de volta a função, de modo que possa ser usada em declarações SELECT
+
+##### TRIGGERS 
+Um triggers  (gatilho) é um tipo especial de store procedure que é executada automaticamente 
+quando um usuario realaiza uma operação de modificação de dados em uma tabela especificada.
+
+As operações que disparam um triggers são:
+
+INSERT
+UPDATE
+DELETE
+
+## Triggers DML
+Os triggers não são executados diretamente;
+disparam apenas em resposta a eventos como insert, update e delete em uma tabela.
+No SQL Server, os triggres disparam uma vez para cada operação de modificação - 
+e não uma vez por linha afetada  (no Oracle há duas opções).
+
+## Modo de disparo de um triggers
+
+Um Triggres no SQL Server pode ser disparado de dois modos diferentes
+
+After(depois) - O código presente no triggr é executado após todas as ações terem sido completadas na tabela
+especificada.
+
+Instead Of(invez de) - O código presente no trigger é executado no lugar da operação que causou o disparo.
+
+   
+
+
+
+
+
+
+
+
+
+
+ 	
+
+ 
+
+
+
+
